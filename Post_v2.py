@@ -1,5 +1,5 @@
 import psycopg2, random, datetime
-from datetime import timedelta
+from datetime import timedelta, timezone
 
 con = psycopg2.connect(
   database="mentol", 
@@ -88,8 +88,9 @@ def start_insert ():
   global idr
   timecheck=0
   counttocommit=100
+  countnow=int(check_count())
 
-  while idr<20000000:
+  while countnow<20000000:
     if timecheck==0:
       timestart=datetime.datetime.now()
       timecheck=1
@@ -104,18 +105,19 @@ def start_insert ():
       else:
         idrnow=int(idrnow)
 
-      countnow=str(check_count())
+      countnow=int(check_count())
       duration=timeend-timestart
-      onemln=duration/counttocommit*1000000
-      print ("Last idr:" ,idrnow)
-      print ("Count rows:" ,countnow)
+      onemln=(duration/counttocommit)*1000000
+      print('---------------------')
       print ("Пройдено итераций: ",counttocommit)
+      print('---              ---')
+      print ("Count rows:" ,countnow)
+      #print ("Last idr:" , idrnow)
       #print ("Time start: ", timestart)
       #print ("Time end: ", timeend)
-      print('            ')
+      print('---              ---')
       print ("Duration: ", duration)
       print ("Speed 1 Mln: ", onemln)
-      print('            ')
     data=data_gen()
     sql="INSERT INTO dbo.tarratedcalls_202001 (datestart, dateend, duration, phonea, phoneb, outtrunk, inctrunk, route, sitesid, sitename, direction, primaryrateduration, staffname) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     cur.execute(sql, data)
