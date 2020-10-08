@@ -1,5 +1,5 @@
 import psycopg2, random, datetime
-from datetime import timedelta, timezone
+from datetime import timedelta
 
 con = psycopg2.connect(
   database="mentol", 
